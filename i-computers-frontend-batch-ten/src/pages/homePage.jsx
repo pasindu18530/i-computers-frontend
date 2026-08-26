@@ -1,7 +1,14 @@
+import Header from "../components/header";
+
 export default function HomePage(){
   return(
-    <div className="w-full h-screen border-[6px] flex justify-center items-center">
-      <h1 className="text-4xl font-bold">Welcome to iComputers</h1>
+    <div className="w-full h-screen  flex justify-center">
+     <Header/>
+      
     </div>
   )
 }
+
+//f4f4f4 primary
+//30364f secondary
+//3e32b6 accent
