@@ -5,12 +5,14 @@ import HomePage from "./pages/homePage";
 import TestPage from "./pages/test";
 import LoginPage from "./pages/login page";
 import ForgotPassword from "./pages/forgot-Password";
+import { Toaster } from 'react-hot-toast';
 // import TrendingProduct from './components/trendingProducts'
 // import ProductCard from './components/productCard'
 
 function App() {
   return (
     <>
+    <Toaster position='top right'/>
       <div className="w-full h-screen flex justify-center items-center bg-primary text-secondary">
         <Routes>
           <Route path="/" element={<HomePage/>}/>
