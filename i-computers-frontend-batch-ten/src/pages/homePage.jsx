@@ -1,14 +1,21 @@
+import { Route, Routes } from "react-router-dom";
 import Header from "../components/header";
+import ProductsPage from "./productsPage";
+import ProductOverviewPage from "./productOverviewPage";
 
 export default function HomePage(){
   return(
-    <div className="w-full h-screen  flex justify-center">
+    <div className="w-full h-screen  flex flex-col ">
      <Header/>
-      
+
+     <div className="w-full h-[calc(100%-100px)] overflow-y-scroll border"></div>
+      <Routes>
+        <Route path ="/" element={<h1>Welcome to iComputers Store!</h1>}/>
+        <Route path="/products" element={<ProductsPage/>}/>
+        <Route path="/contact-us" element={<h1>Contact Us Page</h1>}/>
+        <Route path="/overview/:productId" element={<ProductOverviewPage/>}/>
+      </Routes>
     </div>
   )
 }
 
-//f4f4f4 primary
-//30364f secondary
-//3e32b6 accent

@@ -8,7 +8,7 @@ export default function AdminEditProductPage() {
   const location = useLocation();
   const [productId, setProductId] = useState(location.state?.productId || " ");
   const [name, setName] = useState(location.state?.name || " ");
-  const [altNames, setAltNames] = useState(location.state?.altNames || " ");
+  const [altNames, setAltNames] = useState(location.state?.altNames.join(",") || " ");
   const [price, setPrice] = useState(location.state?.price || " ");
   const [labelledPrice, setLabelledPrice] = useState(location.state?.labelledPrice || " ");
   const [description, setDescription] = useState(location.state?.description || " ");
@@ -18,6 +18,8 @@ export default function AdminEditProductPage() {
   const [category, setCategory] = useState(location.state?.category || " ");
   const [isAvailable, setIsAvailable] = useState(location.state?.isAvailable || false);
   const [stock, setStock] = useState(location.state?.stock || 0);
+  const [isUpdating,setIsUpdating] = useState(false);
+
   const navigate = useNavigate();
 
   
@@ -31,8 +33,9 @@ export default function AdminEditProductPage() {
     )
   
   
-  async function handleSave(){
+  async function handleUpdate(){
     try {
+      setIsUpdating(true);
     const token = localStorage.getItem("token");
 
     if(token == null){
@@ -51,7 +54,7 @@ export default function AdminEditProductPage() {
     const altNamesArray = altNames.split(",")
     
     const productData =  {
-      productId:productId,
+  
       name:name,
       altNames:altNamesArray,
       price:price,
@@ -65,18 +68,25 @@ export default function AdminEditProductPage() {
       stock:stock
     }
 
-    await axios.post(import.meta.env.VITE_API_URL+"/products",productData,
+    if(urls.length == 0){
+      productData.images = location.state.images;
+    }
+
+    await axios.put(import.meta.env.VITE_API_URL+"/products/"+productId,productData,
       {headers : {
         "Authorization" : "Bearer " +token
       }}
     )
 
-    toast.success("Product added successfully")
+    toast.success("Product updated successfully")
      navigate("/admin/products");
     
         
       } catch (error) {
-        toast.error(error?.response.data.message || "Failed to add product. Please try again.")
+        setIsUpdating(false);
+        console.log("UPDATE ERROR:", error);
+    console.log("SERVER ERROR:", error.response?.data);
+        toast.error(error?.response.data.message || "Failed to update product. Please try again.")
       }
     }
 
@@ -86,8 +96,8 @@ export default function AdminEditProductPage() {
         <h1 className="text-2xl font-semibold mb-4">Edit Product</h1>
 
         <div className="h-full justify-center items-center ">
-          <button onClick={handleSave} className="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-            Update
+          <button onClick={handleUpdate} className="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600" disabled={isUpdating}>
+            {isUpdating? "Updating...":"update"}
           </button>
 
           <button className="ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
@@ -103,6 +113,7 @@ export default function AdminEditProductPage() {
           <input 
             className="border border-gray-300 rounded-md p-2 w-full"
             value={productId}
+            disabled={true}
             onChange={(e) => {
               setProductId(e.target.value);
             }}
@@ -168,13 +179,15 @@ export default function AdminEditProductPage() {
           <label className="block mb-2 font-semibold">Category</label>
 
             
-        <select>
+        <select
         value={category}
          onChange={(e)=>{
           setCategory(e.target.value)
          }}
         
-         <div className="border border-gray-300 rounded-md p-2 w-full">
+         className="border border-gray-300 rounded-md p-2 w-full"
+
+          >
           <option value="Laptop">Laptop</option>
           <option value="Mobile">Mobile</option>
           <option value="Headphone">Headphone</option>
@@ -186,7 +199,7 @@ export default function AdminEditProductPage() {
           <option value="Printer">Printer</option>
           <option value="Others">Others</option>
 
-          </div>
+          
           
           
         </select>
@@ -215,9 +228,9 @@ export default function AdminEditProductPage() {
             />
           </div>
 
-         <div className="w-full p-2 " >
+         <div className="w-1/4 p-2 " >
           <label className="block mb-2 font-semibold">Brand</label>
-         </div>
+         
          
           <select
         value={brand}
@@ -244,6 +257,8 @@ export default function AdminEditProductPage() {
           
           
         </select>
+
+        </div>
 
         <div className="w-1/4 p-2 ">
           <label className="block mb-2 font-semibold">Model</label>
