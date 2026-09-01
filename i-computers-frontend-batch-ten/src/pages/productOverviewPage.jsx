@@ -1,15 +1,14 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link,useParams } from "react-router-dom"
 import api from "../utils/api"
 import toast from "react-hot-toast"
 import LoadingAnimation from "../components/loadingAnimation"
 import ImageSlideShow from "../components/imageSlideShow"
 import getFormattedPrice from "../utils/price-format"
+import { addToCart, getCart } from "../utils/cart"
 
 export default function ProductOverviewPage(){
   const parameters = useParams()
-  const navigate = useNavigate()
   const[product,setproduct] = useState(null)
   const [status, setStatus] = useState("loading")
   
@@ -53,10 +52,10 @@ export default function ProductOverviewPage(){
        {
         status == "success" && <div className="w-full h-full flex">
 
-          <div className="w-1/2 h-full border flex justify-center items-center ">
+          <div className="w-1/2 h-full  flex justify-center items-center ">
               <ImageSlideShow images={product.images}/>
           </div>
-          <div className="w-1/2 h-full border flex flex-col p-5">
+          <div className="w-1/2 h-full flex flex-col p-5">
           <h1 className="text-3xl font-bold">{product.name}
             {product.altNames.map(
               (alternativeName,index)=>{
@@ -79,13 +78,43 @@ export default function ProductOverviewPage(){
 
             {
               product.labelledPrice > product.price && 
-              <span className="text-sm text-gray-500 line-through ml-4">
+              <span className="text-xl text-gray-500 line-through">
                 {
                   getFormattedPrice(product.labelledPrice)
                 }
               </span>
             }
 
+            <div className="w-full mt-5 flex gap-10">
+              <span className="text-lg text-gray-500">{product.brand}</span>
+              <span className="text-lg text-gray-500">{product.model}</span>
+            </div>
+
+            <div className="w-full mt-5 flex gap-10">
+              <span className="text-lg text-gray-500">{product.category}</span>
+            </div>
+
+            <p className="text-lg mt-5">
+                {
+                  product.description
+                }
+            </p>
+            <div className="flex mt-5 gap-5">
+
+            <button className="w-62.5 h-16.5 bg-green-500 text-white text-xl font-semibold rounded-lg cursor-pointer hover:bg-green-700 transition-colors duration-300 " onClick={
+              ()=>{
+                addToCart(product,1)
+              }
+            }>Add to cart</button>
+            <button onClick={
+              ()=>{
+                // localStorage.removeItem("cart")
+                console.log(getCart());
+                
+              }
+            } className="w-62.5 h-16.5 bg-green-500 text-white text-xl font-semibold rounded-lg cursor-pointer hover:bg-blue-700 transition-colors duration-300-62.5 h-16.5 bg-blue-500">Buy now</button>
+
+                </div>
           </div>
           </div>
 
