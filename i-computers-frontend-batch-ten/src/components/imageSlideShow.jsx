@@ -16,8 +16,9 @@ export default function ImageSlideShow(props){
                 return(
                   <img className={"w-[90px] h-[90px] cursor-pointer rounded-xl " + (index==activeImage ? "border-4 border-accent": "")}
                   onClick={
+                    ()=>{
                     setActiveImage(index)
-                  }
+                  }}
 
                   src={item}key={index}/>
                 )

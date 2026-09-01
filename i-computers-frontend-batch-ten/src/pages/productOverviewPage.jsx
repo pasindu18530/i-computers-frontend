@@ -9,15 +9,17 @@ import { addToCart, getCart } from "../utils/cart"
 
 export default function ProductOverviewPage(){
   const parameters = useParams()
-  const[product,setproduct] = useState(null)
+  const[product,setProduct] = useState(null)
   const [status, setStatus] = useState("loading")
   
   useEffect(
     ()=>{
       api.get("/products/" + parameters.productId).then(
          (response)=>{
+
+          console.log("PRODUCT IMAGES:", response.data.images);
           console.log(response.data);
-          setproduct(response.data)
+          setProduct(response.data)
           setStatus("success")
           
          }
@@ -30,7 +32,7 @@ export default function ProductOverviewPage(){
     
   )
 
-},[]
+},[parameters.productId]
   )
 
 
@@ -104,6 +106,7 @@ export default function ProductOverviewPage(){
             <button className="w-62.5 h-16.5 bg-green-500 text-white text-xl font-semibold rounded-lg cursor-pointer hover:bg-green-700 transition-colors duration-300 " onClick={
               ()=>{
                 addToCart(product,1)
+                
               }
             }>Add to cart</button>
             <button onClick={

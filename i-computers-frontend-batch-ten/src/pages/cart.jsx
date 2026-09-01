@@ -4,7 +4,7 @@ import getFormattedPrice from "../utils/price-format"
 
 export default function CartPage(){
   const[cart,setCart] = useState(getCart())
-
+    console.log("CART :", cart)
 
   return(
     <div className="w-full h-full flex flex-col p-5 items-center gap-4">
@@ -12,14 +12,14 @@ export default function CartPage(){
         cart.map(
           (item)=>{
             return(
-              <div key={item.product.productId} className="bg-white w-[500px] h-[150px] rounded-lg shadow-2xl flex p-2 items-cente relative">
+              <div key={item.product.productId} className="bg-white w-[500px] h-[150px] rounded-lg shadow-2xl flex p-2 items-center relative">
                 <img className="w-[100px] h-[100px] object-cover rounded-l-lg" src={item.product.image}/>
 
                 <div className="h-full w-[400px] ">
                   <h1 className="text-lg font-semibold" >{item.product.name}</h1>
                   <p className="text-sm text-gray-500">{item.product.productId}</p>
                   {
-                    item.product.labelledPrice > item.product.price && <span className="text-sm text-gray-500 mt-2 line-through">{getFormattedPrice(item.product.price)}</span>
+                    item.product.labelledPrice > item.product.price && <span className="text-sm text-gray-500 mt-2 line-through">{getFormattedPrice(item.product.labelledPrice)}</span>
                   }
                   <p className="text-accent font-semibold text-sm">
                     {getFormattedPrice(item.product.price)}
@@ -60,3 +60,5 @@ export default function CartPage(){
     </div>
   )
 }
+
+
