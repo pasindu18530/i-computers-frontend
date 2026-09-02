@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 import LoadingAnimation from "../components/loadingAnimation"
 import ImageSlideShow from "../components/imageSlideShow"
 import getFormattedPrice from "../utils/price-format"
-import { addToCart, getCart } from "../utils/cart"
+import { addToCart } from "../utils/cart"
 
 export default function ProductOverviewPage(){
   const parameters = useParams()
@@ -109,13 +109,27 @@ export default function ProductOverviewPage(){
                 
               }
             }>Add to cart</button>
-            <button onClick={
+            {/* <button onClick={
               ()=>{
                 // localStorage.removeItem("cart")
                 console.log(getCart());
                 
+              } */}
+
+              <Link to = "/checkout" state={
+                [{
+                  product:{
+                    productId:product.productId,
+                    name : product.name,
+                    image:product.images[0],
+                    labelledPrice : product.labelledPrice,
+                    price:product.price,
+                  },
+                  quantity : 1
+                }
+                ]
               }
-            } className="w-62.5 h-16.5 bg-green-500 text-white text-xl font-semibold rounded-lg cursor-pointer hover:bg-blue-700 transition-colors duration-300-62.5 h-16.5 bg-blue-500">Buy now</button>
+              className="w-62.5 h-16.5 bg-green-500 text-white text-xl font-semibold rounded-lg cursor-pointer hover:bg-blue-700 transition-colors duration-300-62.5 h-16.5 bg-blue-500 flex justify-center items-center">Buy now</Link>
 
                 </div>
           </div>
