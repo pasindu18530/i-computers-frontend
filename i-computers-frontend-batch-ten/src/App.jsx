@@ -1,3 +1,4 @@
+
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminPage from "./pages/adminPage";
@@ -10,8 +11,14 @@ import { Toaster } from 'react-hot-toast';
 // import ProductCard from './components/productCard'
 
 function App() {
+
+  
+  
   return (
     <>
+
+    
+    
     <Toaster position='top right'/>
       <div className="w-full h-screen flex justify-center items-center bg-primary text-secondary">
         <Routes>
@@ -25,5 +32,6 @@ function App() {
     </>
   );
 }
+
 
 export default App;
