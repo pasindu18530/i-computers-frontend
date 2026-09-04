@@ -1,39 +1,51 @@
+
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BiEdit } from "react-icons/bi";
-import { FaPlus } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import LoadingAnimation from "../../components/loadingAnimation";
-import ProductDeleteModal from "../../components/productDeleteModal";
+import getFormattedPrice from "../../utils/price-format";
+import { FaEye } from "react-icons/fa";
+import OrderDetailsModel from "../../components/orderDetailsModel";
 
 
 
 
 
-export default function AdminProductPage() {
+export default function AdminOrdersPage() {
 
-  const [products,setProducts] = useState([])
-  const[isProductsAreLoaded , setIsProductsAreLoaded] = useState(false)
+  
+
+  const [orders,setOrders] = useState([])
+  const[isOrdersAreLoaded , setIsOrdersAreLoaded] = useState(false)
+  const[pageSize,setPageSize] =  useState(10);
+  const[currentPage,setCurrentPage] = useState(1);
+  const[totalPages,setTotalPages] = useState(1);
+  const[totalOrders,setTotalOrders] = useState(0);
 
   useEffect(
     ()=>{
 
-      if(!isProductsAreLoaded){
+      if(!isOrdersAreLoaded){
 
       
       const token = localStorage.getItem("token")
 
-  axios.get(import.meta.env.VITE_API_URL+"/products",{
+  axios.get(import.meta.env.VITE_API_URL+"/orders/"+pageSize+"/"+currentPage,{
     headers:{
       "Authorization" : "Bearer "+ token
     }
   }).then(
     (response)=>{
-      setProducts(response.data)
-      setIsProductsAreLoaded(true)
+       
+
+      setOrders(response.data.orders)
+      setTotalPages(response.data.totalPages);
+      setTotalOrders(response.data.total);
+      setIsOrdersAreLoaded(true);
     }
   ).catch(
+
       (error)=>{
+        
         console.log(error);
         
       }
@@ -41,38 +53,44 @@ export default function AdminProductPage() {
 
     }
 
-    },[isProductsAreLoaded]
+    },[isOrdersAreLoaded]
   )
 
   
   
 
   return (
+
+    
     <div className="w-full h-full overflow-y-scroll p-5">
 
      <div className="sticky top-0 w-full h-[100px] rounded-lg  bg-accent text-white flex items-center p-5 justify-between shadow-2xl ">
         <div>
+        <h1 className="text-2xl font-semibold mb-4">Orders</h1>
         
-        <h1 className="text-2xl font-semibold mb-4">Products</h1>
+        </div>
+        <div className="flex items-center gap-4 ">
+          <span className="text-sm text-gray-600">{totalOrders}</span>
+
         </div>
         </div>
+
 
 
       {
-        isProductsAreLoaded ?
+        isOrdersAreLoaded ?
+        <>
         <table className="mt-5 w-full text-secondary ">
         <thead className="bg-accent/15  text-white ">
           <tr>
-            <th className="text-center border border-primary p-4 ">Image</th>
-            <th className="text-center border border-primary p-4 ">Product ID</th>
-            <th className="text-center border border-primary p-4 ">Name</th>
-            <th className="text-center border border-primary p-4 ">Price</th>
-            <th className="text-center border border-primary p-4 ">Labelled Price</th>
-            <th className="text-center border border-primary p-4 ">Brand</th>
-            <th className="text-center border border-primary p-4 ">Model</th>
-            <th className="text-center border border-primary p-4 ">Category</th>
-            <th className="text-center border border-primary p-4 ">Availability</th>
-            <th className="text-center border border-primary p-4 ">Stock</th>
+            <th className="text-center border border-primary p-4 ">Order ID</th>
+            <th className="text-center border border-primary p-4 ">Email</th>
+            <th className="text-center border border-primary p-4 ">First Name</th>
+            <th className="text-center border border-primary p-4 ">Last  Name</th>
+            <th className="text-center border border-primary p-4 ">Phone</th>
+            <th className="text-center border border-primary p-4 ">Date</th>
+            <th className="text-center border border-primary p-4 ">Total</th>
+            <th className="text-center border border-primary p-4 ">Status</th>
             <th className="text-center border border-primary p-4 ">Actions</th>
           </tr>
         </thead>
@@ -80,37 +98,21 @@ export default function AdminProductPage() {
         <tbody>
           
           {
-            products.map(
+            orders.map(
               (item)=>{
                 return(
-                  <tr className="odd:bg-gray-600 even:bg-primary odd:text-white border-t-4 border-primary hover:bg-accent/45" key={item.productId}>
-                    <td className="p-2">
-                      <img src={item.images[0]} alt={item.name} className="w-16 h-16 object-cover rounded-full" />
-
-                    </td>
-                    <td className="text-center text-wrap p-2">{item.productId}</td>
-                    <td className="text-center text-wrap p-2">{item.name}</td>
-                    <td className="text-center text-wrap p-2">{item.price}</td>
-                    <td className="text-center text-wrap p-2">{item.labelledPrice}</td>
-                    <td className="text-center text-wrap p-2">{item.brand}</td>
-                    <td className="text-center text-wrap p-2">{item.model}</td>
-                    <td className="text-center text-wrap p-2">{item.category}</td>
-                    <td className="text-center text-wrap p-2"></td>
-                    <td className="text-center text-wrap p-2">{item.stock}</td>
-                    <td className="text-center text-wrap p-2">
-                      
-                      <ProductDeleteModal product={item} refresh={
-                        ()=>{
-                          setIsProductsAreLoaded(false)
-                        }
-                      }/>
-                      
-                      
-
-                      <Link to="/admin/edit-product" state={item}> 
-                      <BiEdit className="text-2xl text-blue-500 cursor-pointer hover:text-blue-700"/>
-                        </Link>
-                    </td>
+                  <tr className="odd:bg-gray-600 even:bg-primary odd:text-white border-t-4 border-primary hover:bg-accent/45" key={item.orderId}>
+                    
+                    <td className="text-center text-wrap p-2">{item.orderId}</td>
+                    <td className="text-center text-wrap p-2">{item.email}</td>
+                    <td className="text-center text-wrap p-2">{item.firstName}</td>
+                    <td className="text-center text-wrap p-2">{item.lastName}</td>
+                    <td className="text-center text-wrap p-2">{item.phone}</td>
+                    <td className="text-center text-wrap p-2">{new Date(item.date).toLocaleDateString()}</td>
+                    <td className="text-center text-wrap p-2"><span className="font-semibold text-gray-800">{getFormattedPrice(item.total)}</span></td>
+                    <td className="text-center text-wrap p-2">{item.status}</td>
+                    <td className="text-center text-wrap p-2"><OrderDetailsModel order={item} refresh={()=>setIsOrdersAreLoaded(false)}/></td>
+                    
                   </tr>
                 )
               }
@@ -122,22 +124,52 @@ export default function AdminProductPage() {
 
         </tbody>
       </table>
+      
+      <div className="w-full flex justify-end items-center gap-3 mt-4">
+        <button onClick={
+          ()=>{
+            if(currentPage>1){
+              setCurrentPage(currentPage-1);
+              setIsOrdersAreLoaded(false);
+            }
+          }
+        }className="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors duration-200 ">previous</button>
+        <span className="text-sm text-gray-600 ">Page{currentPage} of {totalPages}</span>
+        <button onClick={
+          ()=>{
+            setCurrentPage(currentPage + 1);
+            setIsOrdersAreLoaded(false);
+          }
+        }className="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors duration-200">Next</button>
+        
+        <select value={pageSize}
+        onChange={(e)=>{
+          setPageSize(parseInt(e.target.value));
+          setIsOrdersAreLoaded(false);
+        }}
+        className="ml-4 px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors duration-200"
+          >
+            <option value={2}>2</option>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
 
-      :
+      </div>
+
+      </>
+
+  :
      <LoadingAnimation/>      
     }
 
-      <Link
-        to="/admin/add-product"
-        className="fixed bottom-2 right-2 w-[60px] h-[60px] bg-accent flex justify-center items-center text-white text-2xl rounded-full shadow-lg hover:bg-black hover:text-accent "
-      >
-        <FaPlus />
-      </Link>
+      
     </div>
+
+    
   );
 }
-
-
 
 
 
@@ -469,6 +501,10 @@ export default function AdminProductPage() {
 //     </div>
 //   );
 // }
+
+
+
+
 
 
 

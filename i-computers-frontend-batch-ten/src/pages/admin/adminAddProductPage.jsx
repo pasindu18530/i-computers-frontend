@@ -41,6 +41,9 @@ export default function AdminAddProductPage() {
 
     const urls = await Promise.all(mediaUploadPromises)
     const altNamesArray = altNames.split(",")
+
+    console.log();
+    
     
     const productData =  {
       productId:productId,
